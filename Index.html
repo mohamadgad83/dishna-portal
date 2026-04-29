@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة دشنا التعليمية | نظام إدارة الدرجات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .portal-card {
+      background: white;
+      border-radius: 35px;
+      padding: 40px 35px;
+      max-width: 550px;
+      width: 100%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .logo { font-size: 60px; margin-bottom: 10px; text-align: center; }
+    h1 { color: #0f766e; font-size: 24px; margin-bottom: 5px; text-align: center; }
+    .sub { color: #64748b; font-size: 13px; text-align: center; margin-bottom: 30px; }
+    
+    /* مربع إدارة الرابط (مخفي) */
+    .url-manager {
+      background: #f8fafc;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 25px;
+      border: 1px solid #e2e8f0;
+      display: none;
+    }
+    .url-manager.show {
+      display: block;
+    }
+    .url-manager h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #0f766e;
+    }
+    .url-input-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .url-input-group input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      font-family: 'Cairo';
+      font-size: 13px;
+      background: white;
+    }
+    .url-input-group input:focus {
+      outline: none;
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
+    }
+    .url-input-group button {
+      background: #0f766e;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .url-input-group button:hover {
+      background: #115e59;
+    }
+    .current-url {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 10px;
+      word-break: break-all;
+    }
+    
+    /* الأزرار العادية */
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-radius: 60px;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: 1px solid #e2e8f0;
+    }
+    .btn-left { display: flex; align-items: center; gap: 12px; }
+    .btn-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .btn-teacher { background: #f0fdf4; border-color: #bbf7d0; }
+    .btn-teacher .btn-icon { background: #0f766e; color: white; }
+    .btn-teacher:hover { background: #dcfce7; transform: translateX(-5px); }
+    
+    .btn-student { background: #eff6ff; border-color: #bfdbfe; }
+    .btn-student .btn-icon { background: #2563eb; color: white; }
+    .btn-student:hover { background: #dbeafe; transform: translateX(-5px); }
+    
+    .btn-text h3 { font-size: 17px; margin-bottom: 3px; }
+    .btn-text p { font-size: 11px; color: #64748b; }
+    .arrow { font-size: 18px; color: #94a3b8; }
+    
+    .footer {
+      font-size: 11px;
+      text-align: center;
+      color: #94a3b8;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .key-hint {
+      font-size: 10px;
+      text-align: center;
+      color: #cbd5e1;
+      margin-top: 10px;
+    }
+    @media (max-width: 550px) {
+      .portal-card { padding: 25px 20px; }
+      .btn { padding: 12px 15px; }
+      .btn-icon { width: 38px; height: 38px; font-size: 16px; }
+      .btn-text h3 { font-size: 14px; }
+      .url-input-group { flex-direction: column; }
+      .url-input-group button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="portal-card">
+  <div class="logo">🏫</div>
+  <h1>مدرسة دشنا الثانوية المشتركة</h1>
+  <div class="sub">نظام إدارة الدرجات الإلكتروني</div>
+
+  <!-- مربع إدارة الرابط (يظهر فقط بالضغط على Ctrl+Alt+M) -->
+  <div id="urlManager" class="url-manager">
+    <h3><i class="fas fa-link"></i> 🔧 إعداد رابط التطبيق</h3>
+    <div class="url-input-group">
+      <input type="text" id="appUrlInput" placeholder="https://script.google.com/macros/s/معرف_مشروعك/exec">
+      <button id="saveUrlBtn"><i class="fas fa-save"></i> حفظ</button>
+    </div>
+    <div class="current-url" id="currentUrlDisplay"></div>
+  </div>
+
+  <!-- الأزرار العادية -->
+  <div class="buttons">
+    <a href="#" id="teacherLink" class="btn btn-teacher" target="_blank">
+      <div class="btn-left">
+        <div class="btn-icon"><i class="fas fa-chalkboard-user"></i></div>
+        <div class="btn-text">
+          <h3>👨‍🏫 بوابة المعلم</h3>
+          <p>رصد الدرجات - التقارير - متابعة الطلاب</p>
+        </div>
+      </div>
+      <div class="arrow"><i class="fas fa-arrow-left"></i></div>
+    </a>
+
+    <a href="#" id="studentLink" class="btn btn-student" target="_blank">
+      <div class="btn-left">
+        <div class="btn-icon"><i class="fas fa-id-card"></i></div>
+        <div class="btn-text">
+          <h3>👨‍🎓 بوابة الطالب</h3>
+          <p>عرض النتائج - الدرجات - التقارير الدراسية</p>
+        </div>
+      </div>
+      <div class="arrow"><i class="fas fa-arrow-left"></i></div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <i class="fas fa-shield-alt"></i> نظام آمن<br>
+    تصميم: أ / محمد جاد عبداللاه © 2025-2026
+  </div>
+  <div class="key-hint" id="keyHint"></div>
+</div>
+
+<script>
+  // مفتاح التخزين المحلي
+  const STORAGE_KEY = 'dishna_app_url';
+  
+  // الرابط الافتراضي
+  const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxNGDbbZhejVyGlrdVtS-1zeD56o5rF1Ko8fr8VswLKx8NyqThr2lYE2wdd8yD7TFbl/exec';
+  
+  // العناصر
+  const urlManager = document.getElementById('urlManager');
+  const urlInput = document.getElementById('appUrlInput');
+  const saveBtn = document.getElementById('saveUrlBtn');
+  const currentUrlDisplay = document.getElementById('currentUrlDisplay');
+  const teacherLink = document.getElementById('teacherLink');
+  const studentLink = document.getElementById('studentLink');
+  const keyHint = document.getElementById('keyHint');
+  
+  // تحديث جميع الروابط
+  function updateAllLinks(baseUrl) {
+    if (!baseUrl) return;
+    let cleanUrl = baseUrl.split('?')[0];
+    teacherLink.href = cleanUrl;
+    studentLink.href = cleanUrl + '?page=student';
+    currentUrlDisplay.innerHTML = `<i class="fas fa-code-branch"></i> الرابط الحالي: <code style="direction:ltr; display:inline-block;">${cleanUrl}</code>`;
+    urlInput.value = cleanUrl;
+  }
+  
+  // حفظ الرابط
+  function saveUrl() {
+    let newUrl = urlInput.value.trim();
+    if (!newUrl) {
+      alert('الرجاء إدخال رابط صحيح');
+      return;
+    }
+    newUrl = newUrl.split('?')[0];
+    localStorage.setItem(STORAGE_KEY, newUrl);
+    updateAllLinks(newUrl);
+    alert('✅ تم تحديث الروابط بنجاح');
+    
+    // إخفاء المربع بعد التحديث
+    urlManager.classList.remove('show');
+  }
+  
+  // تحميل الرابط المحفوظ
+  function loadSavedUrl() {
+    const savedUrl = localStorage.getItem(STORAGE_KEY);
+    if (savedUrl) {
+      updateAllLinks(savedUrl);
+    } else {
+      updateAllLinks(DEFAULT_URL);
+    }
+  }
+  
+  // إظهار مربع الإدارة بالضغط على Ctrl+Alt+M
+  let keyCount = 0;
+  document.addEventListener('keydown', function(e) {
+    // Ctrl + Alt + M
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'm') {
+      e.preventDefault();
+      urlManager.classList.toggle('show');
+      if (urlManager.classList.contains('show')) {
+        urlInput.focus();
+        keyHint.innerHTML = '🔧 وضع الإدارة - قم بلصق الرابط الجديد ثم اضغط حفظ';
+        setTimeout(() => {
+          keyHint.innerHTML = '';
+        }, 3000);
+      }
+    }
+  });
+  
+  // ربط الأحداث
+  saveBtn.addEventListener('click', saveUrl);
+  urlInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      saveUrl();
+    }
+  });
+  
+  // تحميل الرابط عند بدء التشغيل
+  loadSavedUrl();
+</script>
+</body>
+</html>
